@@ -127,6 +127,7 @@ INSERT INTO group_enrollments (student_id, group_id) VALUES
         -- Laboratorio L2
         (16, 3), (17, 3), (18, 3), (19, 3), (20, 3),
         (21, 3), (22, 3), (23, 3), (24, 3), (25, 3);
+        
 INSERT INTO grades (grade_id, student_id, group_id, grade_value, exam_call, with_honors) VALUES
     -- Primera convocatoria: 10 aprobados (2 con MH), 10 suspensos
     (1, 6, 1, 9.8, 'Primera', 1),
@@ -166,3 +167,4 @@ INSERT INTO grades (grade_id, student_id, group_id, grade_value, exam_call, with
     (33, 23, 1, 5.5, 'Tercera', 0),
     (34, 24, 1, 6.0, 'Tercera', 0),
     (35, 25, 1, 5.7, 'Tercera', 0);
+
