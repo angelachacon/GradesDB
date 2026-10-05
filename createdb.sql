@@ -1,4 +1,16 @@
+SET FOREIGN_KEY_CHECKS = 0;
 DROP TABLE IF EXISTS people;
+DROP TABLE IF EXISTS professors;
+DROP TABLE IF EXISTS students;
+DROP TABLE IF EXISTS degrees;
+DROP TABLE IF EXISTS subjects;
+DROP TABLE IF EXISTS groups;
+DROP TABLE IF EXISTS group_enrollments;
+DROP TABLE IF EXISTS grades;
+DROP TABLE IF EXISTS subject_enrollments;
+DROP TABLE IF EXISTS teaching_loads;
+
+SET FOREIGN_KEY_CHECKS = 1;
 
 CREATE TABLE people (
     person_id INT AUTO_INCREMENT,
@@ -9,11 +21,6 @@ CREATE TABLE people (
     email VARCHAR(255) NOT NULL,
     PRIMARY KEY (person_id)
 );
-
-SET FOREIGN_KEY_CHECKS = 0;
-DROP TABLE IF EXISTS people;
-DROP TABLE IF EXISTS professors;
-SET FOREIGN_KEY_CHECKS = 1;
 
 -- Definción tabla people
 
@@ -96,7 +103,7 @@ CREATE TABLE subject_enrollments (
     FOREIGN KEY (subject_id) REFERENCES subjects(subject_id)
 );
 
-codeCREATE TABLE teaching_loads (
+CREATE TABLE teaching_loads (
     professor_id INT,
     group_id INT,
     credits DECIMAL(4,1) NOT NULL,
@@ -104,3 +111,14 @@ codeCREATE TABLE teaching_loads (
     FOREIGN KEY (professor_id) REFERENCES professors(professor_id),
     FOREIGN KEY (group_id) REFERENCES groups(group_id)
 );
+
+ALTER TABLE people
+    ADD CONSTRAINT rn12_people_age CHECK (age BETWEEN 16 AND 70),
+    ADD CONSTRAINT rn14_people_dni CHECK (dni REGEXP '^[0-9]{8}[A-Za-z]$'),
+    ADD CONSTRAINT rn_uq_people_dni UNIQUE (dni),
+    ADD CONSTRAINT rn_uq_people_email UNIQUE (email);
+
+ALTER TABLE professors
+    ADD CONSTRAINT ck_professors_category CHECK (
+        category IN ('Ayudante','AyudanteDoctor','Titular','Catedrático')
+    );
