@@ -1,15 +1,4 @@
-SET FOREIGN_KEY_CHECKS = 0;
 DROP TABLE IF EXISTS people;
-DROP TABLE IF EXISTS professors;
-DROP TABLE IF EXISTS students;
-DROP TABLE IF EXISTS degrees;
-DROP TABLE IF EXISTS subjects;
-DROP TABLE IF EXISTS groups;
-DROP TABLE IF EXISTS group_enrollments;
-DROP TABLE IF EXISTS grades;
-DROP TABLE IF EXISTS subject_enrollments;
-DROP TABLE IF EXISTS teaching_loads;
-SET FOREIGN_KEY_CHECKS = 1;
 
 CREATE TABLE people (
     person_id INT AUTO_INCREMENT,
@@ -21,12 +10,25 @@ CREATE TABLE people (
     PRIMARY KEY (person_id)
 );
 
+SET FOREIGN_KEY_CHECKS = 0;
+DROP TABLE IF EXISTS people;
+DROP TABLE IF EXISTS professors;
+SET FOREIGN_KEY_CHECKS = 1;
+
+-- Definción tabla people
+
 CREATE TABLE professors (
     professor_id INT,
     category VARCHAR(30) NOT NULL,
     PRIMARY KEY (professor_id),
     FOREIGN KEY (professor_id) REFERENCES people(person_id)
 );
+
+-- Recuerde hacer el DROP de esta tabla al principio del script
+
+-- definición de people
+
+-- definición de professors
 
 CREATE TABLE students (
     student_id INT,
@@ -53,6 +55,8 @@ CREATE TABLE subjects (
     PRIMARY KEY (subject_id),
     FOREIGN KEY (degree_id) REFERENCES degrees(degree_id)
 );
+
+-- recuerde siempre hacer el DROP de las tablas al priincipio del script
 
 CREATE TABLE groups (
     group_id INT AUTO_INCREMENT,
@@ -81,22 +85,5 @@ CREATE TABLE grades (
     with_honors BOOLEAN NOT NULL DEFAULT 0,
     PRIMARY KEY (grade_id),
     FOREIGN KEY (student_id) REFERENCES students(student_id),
-    FOREIGN KEY (group_id) REFERENCES groups(group_id)
-);
-
-CREATE TABLE subject_enrollments (
-    student_id INT,
-    subject_id INT,
-    PRIMARY KEY (student_id, subject_id),
-    FOREIGN KEY (student_id) REFERENCES students(student_id),
-    FOREIGN KEY (subject_id) REFERENCES subjects(subject_id)
-);
-
-CREATE TABLE teaching_loads (
-    professor_id INT,
-    group_id INT,
-    credits DECIMAL(4,1) NOT NULL,
-    PRIMARY KEY (professor_id, group_id),
-    FOREIGN KEY (professor_id) REFERENCES professors(professor_id),
     FOREIGN KEY (group_id) REFERENCES groups(group_id)
 );
