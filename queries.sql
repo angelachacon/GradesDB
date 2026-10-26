@@ -110,3 +110,17 @@ WHERE s.credits IN (6, 12);
 SELECT p.first_name, p.last_name, p.age
 FROM people p
 WHERE p.age BETWEEN 20 AND 30;
+
+-- DISTINCT: eliminacion de duplicados
+-- Consulta 17: nombres únicos de grupos
+SELECT DISTINCT g.group_name 
+FROM groups g;
+
+-- Consulta 18: tipos de asignatura
+SELECT DISTINCT s.subject_type
+FROM subjects s;
+
+-- Consulta 19: años academicos
+SELECT DISTINCT g.academic_year
+FROM groups g
+ORDER BY g.academic_year DESC;
