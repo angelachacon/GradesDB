@@ -133,7 +133,7 @@ WHERE g.student_id = 6;
 
 -- Consulta 21: IN con subconsulta
 SELECT DISTINCT ge.student_id
-FROM students_groups ge
+FROM group_enrollments ge
 WHERE ge.group_id IN (
     SELECT g.group_id 
     FROM groups g 
@@ -234,7 +234,7 @@ SELECT DISTINCT
 FROM degrees d
 JOIN subjects s ON d.degree_id = s.degree_id
 JOIN groups gr ON s.subject_id = gr.subject_id
-JOIN students_groups ge ON gr.group_id = ge.group_id
+JOIN group_enrollments ge ON gr.group_id = ge.group_id
 JOIN students st ON ge.student_id = st.student_id
 JOIN people p ON st.student_id = p.person_id;
 
@@ -301,7 +301,7 @@ SELECT
     gr.activity,
     gr.academic_year
 FROM v_students st
-JOIN students_groups ge ON st.student_id = ge.student_id
+JOIN group_enrollments ge ON st.student_id = ge.student_id
 JOIN groups gr ON ge.group_id = gr.group_id;
 
 -- Consulta 38: JOIN uno a muchos
@@ -352,7 +352,7 @@ SELECT DISTINCT
     s.acronym,
     gr.academic_year
 FROM v_students st
-JOIN students_groups ge ON st.student_id = ge.student_id
+JOIN group_enrollments ge ON st.student_id = ge.student_id
 JOIN groups gr ON ge.group_id = gr.group_id
 JOIN subjects s ON gr.subject_id = s.subject_id
 ORDER BY st.last_name, s.subject_name;
@@ -426,7 +426,7 @@ SELECT
     gr.academic_year,
     COUNT(DISTINCT ge.student_id) AS total_students
 FROM groups gr
-JOIN students_groups ge ON gr.group_id = ge.group_id
+JOIN group_enrollments ge ON gr.group_id = ge.group_id
 GROUP BY gr.academic_year
 ORDER BY gr.academic_year DESC;
 
@@ -439,3 +439,111 @@ SELECT
 FROM v_professors pr
 JOIN teaching_loads tl ON pr.professor_id = tl.professor_id
 GROUP BY pr.professor_id, pr.first_name, pr.last_name, pr.category;
+
+-- HAVING: Filtrado de grupos
+-- Consulta 51: Filtro por agregado
+SELECT 
+    st.first_name,
+    st.last_name,
+    AVG(g.grade_value) AS average_grade
+FROM v_students st
+JOIN grades g ON st.student_id = g.student_id
+GROUP BY st.student_id, st.first_name, st.last_name
+HAVING AVG(g.grade_value) > 7;
+
+-- Consulta 52: Conteo con umbral 
+SELECT 
+    s.subject_name,
+    COUNT(*) AS total_groups
+FROM subjects s
+JOIN groups gr ON s.subject_id = gr.subject_id
+GROUP BY s.subject_id, s.subject_name
+HAVING COUNT(*) > 3;
+
+-- Consulta 53: Filtrado de tamaño de gurpo
+SELECT 
+    gr.group_name,
+    gr.activity,
+    COUNT(*) AS total_students
+FROM groups gr
+JOIN group_enrollments ge ON gr.group_id = ge.group_id
+GROUP BY gr.group_id, gr.group_name, gr.activity
+HAVING COUNT(*) > 15;
+
+-- Consulta 54: Promedio con filtro
+SELECT 
+    s.subject_name,
+    AVG(g.grade_value) AS average_grade,
+    COUNT(*) AS total_grades
+FROM subjects s
+JOIN groups gr ON s.subject_id = gr.subject_id
+JOIN grades g ON gr.group_id = g.group_id
+GROUP BY s.subject_id, s.subject_name
+HAVING AVG(g.grade_value) > 5.5;
+
+-- Consultas complejas combinadas 
+-- Consulta 55: Top N con filtros
+SELECT 
+    s.subject_name,
+    COUNT(DISTINCT ge.student_id) AS total_students
+FROM subjects s
+JOIN groups gr ON s.subject_id = gr.subject_id
+JOIN group_enrollments ge ON gr.group_id = ge.group_id
+WHERE gr.academic_year = 2024
+GROUP BY s.subject_id, s.subject_name
+ORDER BY total_students DESC, s.subject_name ASC
+LIMIT 3;
+
+-- Consulta 56: Condición especial con agregado
+SELECT 
+    st.first_name,
+    st.last_name,
+    COUNT(*) AS total_honors
+FROM v_students st
+JOIN grades g ON st.student_id = g.student_id
+WHERE g.with_honors = 1
+GROUP BY st.student_id, st.first_name, st.last_name
+HAVING COUNT(*) > 1;
+
+-- Consulta 57: Ranking con múltiples JOIN
+SELECT 
+    d.degree_name,
+    COUNT(DISTINCT ge.student_id) AS total_students
+FROM degrees d
+JOIN subjects s ON d.degree_id = s.degree_id
+JOIN groups gr ON s.subject_id = gr.subject_id
+JOIN group_enrollments ge ON gr.group_id = ge.group_id
+WHERE gr.academic_year = 2024
+GROUP BY d.degree_id, d.degree_name
+ORDER BY COUNT(DISTINCT ge.student_id) DESC;
+
+-- Consulta 58: Máximo por grupo
+SELECT 
+    st.first_name,
+    st.last_name,
+    MAX(g.grade_value) AS max_grade
+FROM v_students st
+JOIN grades g ON st.student_id = g.student_id
+GROUP BY st.student_id, st.first_name, st.last_name
+ORDER BY MAX(g.grade_value) DESC;
+
+-- Consulta 59: Analisis de carga docente
+SELECT 
+    pr.first_name,
+    pr.last_name,
+    COUNT(DISTINCT tl.group_id) AS total_groups
+FROM v_professors pr
+JOIN teaching_loads tl ON pr.professor_id = tl.professor_id
+GROUP BY pr.professor_id, pr.first_name, pr.last_name
+HAVING COUNT(DISTINCT tl.group_id) > 1;
+
+-- Consulta 60: Subconsulta con GROUP BY
+SELECT DISTINCT s.subject_name, d.degree_name
+FROM subjects s
+JOIN degrees d ON s.degree_id = d.degree_id
+WHERE d.degree_id IN (
+    SELECT degree_id
+    FROM subjects
+    GROUP BY degree_id
+    HAVING COUNT(*) > 15
+);
