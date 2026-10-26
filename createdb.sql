@@ -1,3 +1,4 @@
+USE grades_db;
 SET FOREIGN_KEY_CHECKS = 0;
 DROP TABLE IF EXISTS people;
 DROP TABLE IF EXISTS professors;

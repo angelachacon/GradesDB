@@ -1,3 +1,4 @@
+USE grades_db;
 SET FOREIGN_KEY_CHECKS = 0;
 DELETE FROM teaching_loads;
 DELETE FROM subject_enrollments;
