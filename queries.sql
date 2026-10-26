@@ -61,3 +61,52 @@ SELECT
     p.email
 FROM students st
 JOIN people p ON st.student_id = p.person_id;
+
+-- Funciones agregadas
+-- Consulta 7: media de notas
+SELECT AVG(g.grade_value) AS average_grade
+FROM grades g
+WHERE g.group_id = 1;
+
+-- Consulta 8: suma de creditos
+SELECT SUM(s.credits) AS total_credits
+FROM subjects s 
+WHERE s.degree_id = 3;
+
+-- Consulta 9: contar registros
+SELECT COUNT(*) AS total_students
+FROM students;
+
+-- Consulta 10: Contar con agrupación básica
+SELECT activity, COUNT(*) AS total_groups
+FROM groups
+GROUP BY activity;
+
+-- Consulta 11: valor máximo
+SELECT MAX(g.grade_value) AS max_grade
+FROM grades g;
+
+-- Consulta 12: valor mínimo
+SELECT MIN(g.grade_value) AS min_grade
+FROM grades g;
+
+-- Condiciones multiples
+-- Consulta 13: OR lógico
+SELECT g.grade_id, g.grade_value, g.exam_call
+FROM grades g
+WHERE g.grade_value < 5 OR g.grade_value > 9;
+ 
+-- Consulta 14: Between
+SELECT g.grade_id, g.grade_value, g.exam_call
+FROM grades g
+WHERE g.grade_value BETWEEN 5 AND 7;
+
+-- Consulta 15: in
+SELECT s.subject_name, s.credits
+FROM subjects s
+WHERE s.credits IN (6, 12);
+
+-- Consulta 16: Rango de edad
+SELECT p.first_name, p.last_name, p.age
+FROM people p
+WHERE p.age BETWEEN 20 AND 30;
