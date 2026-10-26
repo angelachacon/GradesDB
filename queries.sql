@@ -247,3 +247,47 @@ SELECT v.first_name, v.last_name, AVG(v.grade_value) AS average_grade
 FROM v_student_grades v
 GROUP BY v.person_id, v.first_name, v.last_name;
 
+-- ORDER BY LIMIT y OFFSET: Control de resultados
+-- Consulta 30: ordenacion ascendente
+SELECT g.grade_id, g.student_id, g.grade_value, g.exam_call
+FROM grades g
+ORDER BY g.grade_value ASC;
+
+-- Consulta 31: Ordenacion descendente
+SELECT g.grade_id, g.student_id, g.grade_value, g.exam_call
+FROM grades g
+ORDER BY g.grade_value DESC;
+
+-- Consulta 32: Limitación de resultados
+SELECT g.grade_id, g.student_id, g.grade_value, g.exam_call
+FROM grades g
+ORDER BY g.grade_value DESC
+LIMIT 5;
+
+-- Consulta 33: Ordenacion multiple
+SELECT 
+    st.first_name,
+    st.last_name,
+    g.grade_value,
+    g.exam_call
+FROM grades g
+JOIN v_students st ON g.student_id = st.student_id
+WHERE g.grade_value >= 5
+ORDER BY st.last_name ASC, st.first_name ASC;
+
+-- Consulta 34: Paginación básica
+SELECT g.grade_id, g.student_id, g.grade_value
+FROM grades g
+ORDER BY g.grade_value DESC
+LIMIT 5 OFFSET 5;
+
+-- Consulta 35: tercera página
+SELECT g.grade_id, g.student_id, g.grade_value
+FROM grades g
+ORDER BY g.grade_value DESC
+LIMIT 5 OFFSET 10;
+
+-- Consulta 36: Ordenación con criterios mixtos
+SELECT g.group_name, g.activity, g.academic_year
+FROM groups g
+ORDER BY g.academic_year DESC, g.group_name ASC;
