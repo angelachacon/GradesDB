@@ -124,3 +124,51 @@ FROM subjects s;
 SELECT DISTINCT g.academic_year
 FROM groups g
 ORDER BY g.academic_year DESC;
+
+-- Subconsultas
+-- Consulta 20: agregado filtrado
+SELECT MAX(g.grade_value) AS max_grade
+FROM grades g
+WHERE g.student_id = 6;
+
+-- Consulta 21: IN con subconsulta
+SELECT DISTINCT ge.student_id
+FROM students_groups ge
+WHERE ge.group_id IN (
+    SELECT g.group_id 
+    FROM groups g 
+    WHERE g.academic_year = 2024
+);
+
+-- Consulta 22: Comparacion con agregado
+SELECT s.subject_name, s.credits
+FROM subjects s
+WHERE s.credits > (SELECT AVG(credits) FROM subjects);
+
+-- Patrones con LIKE
+-- Consulta 23:
+SELECT p.first_name, p.last_name, p.dni
+FROM people p
+WHERE p.dni LIKE '%A';
+
+-- Consulta 24: Inicio de cadena
+SELECT s.subject_name
+FROM subjects s
+WHERE s.subject_name LIKE 'Fundamentos%';
+
+-- Consulta 25: 
+SELECT p.first_name, p.last_name
+FROM people p
+WHERE p.first_name LIKE '_____';
+
+-- Filtrado por fechas y años
+-- Consulta 26: Filtro por año
+SELECT g.group_name, g.activity, g.academic_year
+FROM groups g
+WHERE g.academic_year = 2024;
+
+-- Consulta 27: rango de años
+SELECT g.group_name, g.activity, g.academic_year
+FROM groups g
+WHERE g.academic_year BETWEEN 2020 AND 2023
+ORDER BY g.academic_year;
