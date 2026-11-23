@@ -112,6 +112,16 @@ BEGIN
     RETURN v_count;
 END //
 
-
+CREATE OR REPLACE FUNCTION f_professor_total_credits(
+    p_professor_id INT
+) RETURNS DECIMAL(6,2)
+READS SQL DATA
+BEGIN
+    DECLARE v_total DECIMAL(6,2);
+    SELECT COALESCE(SUM(credits), 0) INTO v_total
+    FROM teaching_loads
+    WHERE professor_id = p_professor_id;
+    RETURN v_total;
+END //
 
 DELIMITER ;
