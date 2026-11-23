@@ -97,4 +97,21 @@ BEGIN
     RETURN v_average;
 END //
 
+CREATE OR REPLACE FUNCTION f_count_student_grades(
+    p_student_id INT,
+    p_exam_call VARCHAR(20)
+) RETURNS INT
+READS SQL DATA
+
+BEGIN
+    DECLARE v_count INT;
+    SELECT COUNT(*) INTO v_count
+    FROM grades
+    WHERE student_id = p_student_id
+      AND exam_call = p_exam_call;
+    RETURN v_count;
+END //
+
+
+
 DELIMITER ;
