@@ -177,4 +177,24 @@ BEGIN
     END IF;
 END//
 
+-- Ejercicio 3
+CREATE OR REPLACE TRIGGER t_biu_subjects_degree_credits
+BEFORE INSERT OR UPDATE ON subjects
+FOR EACH ROW
+BEGIN
+    DECLARE v_total INT;
+
+    -- Créditos del resto de asignaturas del grado 
+    SELECT COALESCE(SUM(credits), 0) INTO v_total
+    FROM subjects
+    WHERE degree_id = NEW.degree_id
+      AND subject_id <> NEW.subject_id;
+
+    IF v_total + NEW.credits > 240 THEN
+        SIGNAL SQLSTATE '45000'
+            SET MESSAGE_TEXT = 'EJ3: Un grado no puede tener más de 240 créditos en total';
+    END IF;
+END//
+
+
 DELIMITER ;
