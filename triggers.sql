@@ -196,5 +196,29 @@ BEGIN
     END IF;
 END//
 
+-- Ejercicio 4
+CREATE OR REPLACE TRIGGER t_biu_subject_enrollments_max_credits
+BEFORE INSERT OR UPDATE ON subject_enrollments
+FOR EACH ROW
+BEGIN
+    DECLARE v_current INT;
+    DECLARE v_new INT;
+
+    -- Créditos de las demás matrículas del alumno 
+    SELECT COALESCE(SUM(s.credits), 0) INTO v_current
+    FROM subject_enrollments se
+    JOIN subjects s ON s.subject_id = se.subject_id
+    WHERE se.student_id = NEW.student_id
+      AND NOT (se.student_id <=> OLD.student_id
+               AND se.subject_id <=> OLD.subject_id);
+
+    -- Créditos de la asignatura en la que se matricula
+    SELECT credits INTO v_new FROM subjects WHERE subject_id = NEW.subject_id;
+
+    IF v_current + v_new > 60 THEN
+        SIGNAL SQLSTATE '45000'
+            SET MESSAGE_TEXT = 'EJ4: Un alumno no puede estar matriculado en más de 60 créditos';
+    END IF;
+END//
 
 DELIMITER ;
